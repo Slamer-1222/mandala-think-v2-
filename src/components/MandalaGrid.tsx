@@ -63,7 +63,9 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
   }
 
   const handleAddChild = (cellId: string) => {
-    addChildChart(chart.id, cellId)
+    const childChart = addChildChart(chart.id, cellId)
+    // 直接導航到新創建的子圖表
+    navigate(`/editor/${childChart.id}`)
   }
 
   const handleNavigateToChild = (childChart: MandalaChart) => {

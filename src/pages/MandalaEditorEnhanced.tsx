@@ -35,7 +35,8 @@ const MandalaEditorEnhanced = () => {
     canUndo,
     canRedo,
     getHistorySize,
-    clearHistory
+    clearHistory,
+    findParentChart
   } = useMandalaStoreWithHistory()
   
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -170,6 +171,30 @@ const MandalaEditorEnhanced = () => {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
+            {/* 面包屑導航 */}
+            {(() => {
+              const parentInfo = findParentChart(currentChart.id)
+              if (parentInfo) {
+                const parentCell = parentInfo.parent.cells.find(cell => cell.id === parentInfo.cellId)
+                return (
+                  <div className="flex items-center text-sm text-gray-500 mb-1">
+                    <button
+                      onClick={() => {
+                        setCurrentChart(parentInfo.parent)
+                        navigate(`/editor/${parentInfo.parent.id}`)
+                      }}
+                      className="hover:text-gray-700 hover:underline"
+                    >
+                      {parentInfo.parent.title}
+                    </button>
+                    <span className="mx-2">›</span>
+                    <span>{parentCell?.content || '子主題'}</span>
+                  </div>
+                )
+              }
+              return null
+            })()}
+            
             <input
               type="text"
               value={currentChart.title}

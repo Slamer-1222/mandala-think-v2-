@@ -29,7 +29,7 @@ interface MandalaStoreWithHistory {
   setCurrentChart: (chart: MandalaChart | null) => void
   
   updateCell: (chartId: string, cellId: string, content: string, options?: { autoRename?: boolean }) => void
-  addChildChart: (chartId: string, cellId: string) => void
+  addChildChart: (chartId: string, cellId: string) => MandalaChart
   
   loadTemplate: (templateId: string) => MandalaChart | null
   loadTemplateAsTemp: (templateId: string) => MandalaChart | null  // 新增：加载为临时模板
@@ -44,6 +44,9 @@ interface MandalaStoreWithHistory {
   canUndo: () => boolean
   canRedo: () => boolean
   getHistorySize: () => number
+  
+  // 導航輔助函數
+  findParentChart: (childChartId: string) => { parent: MandalaChart; cellId: string } | null
 }
 
 const MAX_HISTORY_SIZE = 10
@@ -473,25 +476,46 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
       },
       
       addChildChart: (chartId: string, cellId: string) => {
-        const childChart = createEmptyChart('子主題', 'creative')
+        const state = get()
+        const parentChart = state.charts.find(chart => chart.id === chartId)
+        const parentCell = parentChart?.cells.find(cell => cell.id === cellId)
+        
+        // 使用父格子的內容作為子主題標題，如果為空則使用預設值
+        const childTitle = parentCell?.content 
+          ? `${parentCell.content} - 詳細探討`
+          : '子主題'
+        
+        const childChart = createEmptyChart(childTitle, 'creative')
+        
+        // 在子圖表的中心格子預填父格子的內容
+        if (parentCell?.content) {
+          childChart.cells[0].content = parentCell.content
+        }
+        
         set((state) => ({
-          charts: state.charts.map(chart => 
-            chart.id === chartId 
-              ? {
-                  ...chart,
-                  cells: chart.cells.map(cell => 
-                    cell.id === cellId 
-                      ? { ...cell, children: [...(cell.children || []), childChart] }
-                      : cell
-                  ),
-                  updatedAt: new Date()
-                }
-              : chart
-          )
+          charts: [
+            ...state.charts.map(chart => 
+              chart.id === chartId 
+                ? {
+                    ...chart,
+                    cells: chart.cells.map(cell => 
+                      cell.id === cellId 
+                        ? { ...cell, children: [...(cell.children || []), childChart] }
+                        : cell
+                    ),
+                    updatedAt: new Date()
+                  }
+                : chart
+            ),
+            childChart // 將子圖表添加到圖表列表
+          ],
+          currentChart: childChart // 直接設置為當前圖表
         }))
         
         // 保存到歷史
         get().saveToHistory('添加子圖表')
+        
+        return childChart
       },
       
       loadTemplate: (templateId: string) => {
@@ -576,6 +600,23 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
         set((state) => ({
           templates: [...state.templates, newTemplate]
         }))
+      },
+      
+      // 查找父圖表
+      findParentChart: (childChartId: string) => {
+        const state = get()
+        for (const chart of state.charts) {
+          for (const cell of chart.cells) {
+            if (cell.children) {
+              for (const childChart of cell.children) {
+                if (childChart.id === childChartId) {
+                  return { parent: chart, cellId: cell.id }
+                }
+              }
+            }
+          }
+        }
+        return null
       }
     }),
     {
