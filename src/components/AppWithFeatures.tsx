@@ -10,6 +10,7 @@ import Home from '../pages/Home'
 import MandalaEditor from '../pages/MandalaEditorEnhanced'
 import Templates from '../pages/Templates'
 import About from '../pages/About'
+import Guide from '../pages/Guide'
 
 const AppWithFeatures = () => {
   const [showShortcutHelp, setShowShortcutHelp] = useState(false)
@@ -143,6 +144,7 @@ const AppWithFeatures = () => {
           <Route path="editor/temp/:templateId" element={<MandalaEditor />} />
           <Route path="templates" element={<Templates />} />
           <Route path="about" element={<About />} />
+          <Route path="guide" element={<Guide />} />
         </Route>
       </Routes>
       

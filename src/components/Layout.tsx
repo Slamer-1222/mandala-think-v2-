@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Brain, Home, FileText, Info, Plus } from 'lucide-react'
+import { Brain, Home, FileText, Info, Plus, BookOpen } from 'lucide-react'
 
 const Layout = () => {
   const location = useLocation()
@@ -8,6 +8,7 @@ const Layout = () => {
     { name: '首頁', href: '/', icon: Home },
     { name: '編輯器', href: '/editor', icon: Plus },
     { name: '模板', href: '/templates', icon: FileText },
+    { name: '教學', href: '/guide', icon: BookOpen },
     { name: '關於', href: '/about', icon: Info },
   ]
   
