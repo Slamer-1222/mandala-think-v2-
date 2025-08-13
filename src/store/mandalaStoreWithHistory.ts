@@ -30,6 +30,7 @@ interface MandalaStoreWithHistory {
   
   updateCell: (chartId: string, cellId: string, content: string, options?: { autoRename?: boolean }) => void
   addChildChart: (chartId: string, cellId: string) => MandalaChart
+  removeChildChart: (parentChartId: string, cellId: string, childChartId: string) => void
   
   loadTemplate: (templateId: string) => MandalaChart | null
   loadTemplateAsTemp: (templateId: string) => MandalaChart | null  // 新增：加载为临时模板
@@ -516,6 +517,32 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
         get().saveToHistory('添加子圖表')
         
         return childChart
+      },
+      
+      removeChildChart: (parentChartId: string, cellId: string, childChartId: string) => {
+        set((state) => ({
+          charts: state.charts
+            .filter(chart => chart.id !== childChartId) // 從圖表列表中移除子圖表
+            .map(chart => 
+              chart.id === parentChartId 
+                ? {
+                    ...chart,
+                    cells: chart.cells.map(cell => 
+                      cell.id === cellId 
+                        ? { 
+                            ...cell, 
+                            children: cell.children?.filter(child => child.id !== childChartId) || []
+                          }
+                        : cell
+                    ),
+                    updatedAt: new Date()
+                  }
+                : chart
+            )
+        }))
+        
+        // 保存到歷史
+        get().saveToHistory('刪除子圖表')
       },
       
       loadTemplate: (templateId: string) => {

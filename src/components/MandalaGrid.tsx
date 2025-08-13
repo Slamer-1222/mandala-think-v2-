@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MandalaCell, MandalaChart } from '../types'
 import { useMandalaStoreWithHistory } from '../store/mandalaStoreWithHistory'
-import { Plus, Edit3, Save, X, ArrowRight, Eye } from 'lucide-react'
+import { Plus, Edit3, Save, X, ArrowRight, Eye, Trash2 } from 'lucide-react'
 
 interface MandalaGridProps {
   chart: MandalaChart
@@ -12,10 +12,11 @@ interface MandalaGridProps {
 
 const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) => {
   const navigate = useNavigate()
-  const { updateCell, addChildChart, setCurrentChart } = useMandalaStoreWithHistory()
+  const { updateCell, addChildChart, removeChildChart, setCurrentChart } = useMandalaStoreWithHistory()
   const [editingCell, setEditingCell] = useState<string | null>(null)
   const [editContent, setEditContent] = useState('')
   const [showChildrenFor, setShowChildrenFor] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ cellId: string; childId: string } | null>(null)
   const popupRef = useRef<HTMLDivElement>(null)
 
   // 點擊外部關閉彈出層
@@ -71,6 +72,12 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
   const handleNavigateToChild = (childChart: MandalaChart) => {
     setCurrentChart(childChart)
     navigate(`/editor/${childChart.id}`)
+  }
+
+  const handleDeleteChild = (cellId: string, childId: string) => {
+    removeChildChart(chart.id, cellId, childId)
+    setDeleteConfirm(null)
+    setShowChildrenFor(null)
   }
 
   // 获取螺旋状思考模式的步骤编号
@@ -241,10 +248,12 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
                   {cell.children.map((childChart, index) => (
                     <div
                       key={childChart.id}
-                      className="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleNavigateToChild(childChart)}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100"
                     >
-                      <div className="flex-1">
+                      <div 
+                        className="flex-1 cursor-pointer"
+                        onClick={() => handleNavigateToChild(childChart)}
+                      >
                         <div className="text-sm font-medium text-gray-900">
                           {childChart.title || `子主題 ${index + 1}`}
                         </div>
@@ -252,7 +261,28 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
                           {new Date(childChart.updatedAt).toLocaleDateString('zh-TW')}
                         </div>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleNavigateToChild(childChart)
+                          }}
+                          className="p-1 text-gray-400 hover:text-blue-600"
+                          title="編輯子主題"
+                        >
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setDeleteConfirm({ cellId: cell.id, childId: childChart.id })
+                          }}
+                          className="p-1 text-gray-400 hover:text-red-600"
+                          title="刪除子主題"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -285,13 +315,41 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
   ]
 
   return (
-    <div id="mandala-grid" className={`mandala-grid ${chart.thinkingMode}`}>
-      {positions.map(position => {
-        const cell = getCellByPosition(position)
-        if (!cell) return null
-        return renderCell(cell)
-      })}
-    </div>
+    <>
+      <div id="mandala-grid" className={`mandala-grid ${chart.thinkingMode}`}>
+        {positions.map(position => {
+          const cell = getCellByPosition(position)
+          if (!cell) return null
+          return renderCell(cell)
+        })}
+      </div>
+
+      {/* 刪除確認對話框 */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">確認刪除子主題</h3>
+            <p className="text-gray-600 mb-6">
+              您確定要刪除這個子主題嗎？此操作無法撤銷，子主題中的所有內容都會永久刪除。
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+              >
+                取消
+              </button>
+              <button
+                onClick={() => handleDeleteChild(deleteConfirm.cellId, deleteConfirm.childId)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+              >
+                確定刪除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
