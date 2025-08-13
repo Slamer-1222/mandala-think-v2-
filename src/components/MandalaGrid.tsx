@@ -80,17 +80,17 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
     setShowChildrenFor(null)
   }
 
-  // 获取螺旋状思考模式的步骤编号
+  // 获取螺旋状思考模式的步骤编号（順時鐘方向）
   const getStepNumber = (position: string) => {
     const stepMap: Record<string, number> = {
-      'top-left': 1,
-      'top': 2,
-      'top-right': 3,
-      'left': 4,
-      'right': 5,
-      'bottom-left': 6,
-      'bottom': 7,
-      'bottom-right': 8
+      'top': 1,           // 12點位置
+      'top-right': 2,     // 1-2點位置
+      'right': 3,         // 3點位置
+      'bottom-right': 4,  // 4-5點位置
+      'bottom': 5,        // 6點位置
+      'bottom-left': 6,   // 7-8點位置
+      'left': 7,          // 9點位置
+      'top-left': 8       // 10-11點位置
     }
     return stepMap[position]
   }

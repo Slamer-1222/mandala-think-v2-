@@ -44,14 +44,14 @@
     @apply border-green-300 bg-green-50/30 hover:border-green-400;
   }
   
-  .mandala-grid.spiral .mandala-cell:nth-child(1) { @apply border-green-400 bg-green-100/40; } /* top-left - 步骤1 */
-  .mandala-grid.spiral .mandala-cell:nth-child(2) { @apply border-green-400 bg-green-100/40; } /* top - 步骤2 */
-  .mandala-grid.spiral .mandala-cell:nth-child(3) { @apply border-green-400 bg-green-100/40; } /* top-right - 步骤3 */
-  .mandala-grid.spiral .mandala-cell:nth-child(4) { @apply border-green-400 bg-green-100/40; } /* left - 步骤4 */
-  .mandala-grid.spiral .mandala-cell:nth-child(6) { @apply border-green-400 bg-green-100/40; } /* right - 步骤5 */
-  .mandala-grid.spiral .mandala-cell:nth-child(7) { @apply border-green-400 bg-green-100/40; } /* bottom-left - 步骤6 */
-  .mandala-grid.spiral .mandala-cell:nth-child(8) { @apply border-green-400 bg-green-100/40; } /* bottom - 步骤7 */
-  .mandala-grid.spiral .mandala-cell:nth-child(9) { @apply border-green-400 bg-green-100/40; } /* bottom-right - 步骤8 */
+  .mandala-grid.spiral .mandala-cell:nth-child(2) { @apply border-green-400 bg-green-100/40; } /* top - 步驟1 (12點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(3) { @apply border-green-400 bg-green-100/40; } /* top-right - 步驟2 (1-2點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(6) { @apply border-green-400 bg-green-100/40; } /* right - 步驟3 (3點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(9) { @apply border-green-400 bg-green-100/40; } /* bottom-right - 步驟4 (4-5點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(8) { @apply border-green-400 bg-green-100/40; } /* bottom - 步驟5 (6點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(7) { @apply border-green-400 bg-green-100/40; } /* bottom-left - 步驟6 (7-8點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(4) { @apply border-green-400 bg-green-100/40; } /* left - 步驟7 (9點位置) */
+  .mandala-grid.spiral .mandala-cell:nth-child(1) { @apply border-green-400 bg-green-100/40; } /* top-left - 步驟8 (10-11點位置) */
   
   /* 十字型思考模式样式 */
   .mandala-grid.cross .mandala-cell:not(.mandala-center) {
