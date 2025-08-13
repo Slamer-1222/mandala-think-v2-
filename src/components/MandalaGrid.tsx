@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { MandalaCell, MandalaChart } from '../types'
 import { useMandalaStoreWithHistory } from '../store/mandalaStoreWithHistory'
-import { Plus, Edit3, Save, X, ArrowRight } from 'lucide-react'
+import { Plus, Edit3, Save, X, ArrowRight, Eye } from 'lucide-react'
 
 interface MandalaGridProps {
   chart: MandalaChart
@@ -10,9 +11,26 @@ interface MandalaGridProps {
 }
 
 const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) => {
-  const { updateCell, addChildChart } = useMandalaStoreWithHistory()
+  const navigate = useNavigate()
+  const { updateCell, addChildChart, setCurrentChart } = useMandalaStoreWithHistory()
   const [editingCell, setEditingCell] = useState<string | null>(null)
   const [editContent, setEditContent] = useState('')
+  const [showChildrenFor, setShowChildrenFor] = useState<string | null>(null)
+  const popupRef = useRef<HTMLDivElement>(null)
+
+  // 點擊外部關閉彈出層
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        setShowChildrenFor(null)
+      }
+    }
+
+    if (showChildrenFor) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showChildrenFor])
 
   const handleCellClick = (cell: MandalaCell) => {
     if (onCellClick) {
@@ -46,6 +64,11 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
 
   const handleAddChild = (cellId: string) => {
     addChildChart(chart.id, cellId)
+  }
+
+  const handleNavigateToChild = (childChart: MandalaChart) => {
+    setCurrentChart(childChart)
+    navigate(`/editor/${childChart.id}`)
   }
 
   // 获取螺旋状思考模式的步骤编号
@@ -192,9 +215,54 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
             {/* 子主題指示器 */}
             {cell.children && cell.children.length > 0 && (
               <div className="absolute bottom-1 left-1">
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowChildrenFor(showChildrenFor === cell.id ? null : cell.id)
+                  }}
+                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors cursor-pointer"
+                  title="點擊查看子主題列表"
+                >
+                  <Eye className="h-3 w-3 mr-1" />
                   {cell.children.length} 子主題
-                </span>
+                </button>
+              </div>
+            )}
+
+            {/* 子主題列表彈出層 */}
+            {showChildrenFor === cell.id && cell.children && (
+              <div 
+                ref={popupRef}
+                className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 min-w-[200px] z-20">
+                <div className="text-xs font-medium text-gray-600 mb-2">子主題列表</div>
+                <div className="space-y-2">
+                  {cell.children.map((childChart, index) => (
+                    <div
+                      key={childChart.id}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleNavigateToChild(childChart)}
+                    >
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900">
+                          {childChart.title || `子主題 ${index + 1}`}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {new Date(childChart.updatedAt).toLocaleDateString('zh-TW')}
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowChildrenFor(null)
+                  }}
+                  className="mt-2 w-full text-xs text-gray-500 hover:text-gray-700"
+                >
+                  關閉
+                </button>
               </div>
             )}
           </>
