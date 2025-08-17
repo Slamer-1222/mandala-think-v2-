@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useMandalaStoreWithHistory } from '../store/mandalaStoreWithHistory'
-import { Brain, Target, Lightbulb, BookOpen, AlertTriangle, Plus, Play } from 'lucide-react'
+import { Brain, Target, Lightbulb, BookOpen, AlertTriangle, Plus, Play, TrendingUp } from 'lucide-react'
 
 const Templates = () => {
   const navigate = useNavigate()
@@ -11,7 +11,8 @@ const Templates = () => {
     planning: Target,
     analysis: Lightbulb,
     learning: BookOpen,
-    'problem-solving': AlertTriangle
+    'problem-solving': AlertTriangle,
+    strategy: TrendingUp
   }
 
   const categoryNames = {
@@ -19,7 +20,8 @@ const Templates = () => {
     planning: '目標設定',
     analysis: '問題分析',
     learning: '學習整理',
-    'problem-solving': '問題解決'
+    'problem-solving': '問題解決',
+    strategy: '策略分析'
   }
 
   const handleUseTemplate = (templateId: string) => {

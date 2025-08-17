@@ -127,9 +127,9 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
         },
         {
           id: 'analysis',
-          name: '問題分析模板',
+          name: '5W1H問題分析模板',
           description: '用於5W1H問題分析，系統化分析問題的各個面向',
-          category: 'analysis',
+          category: 'problem-solving',
           cells: [
             { position: 'center', content: '核心問題' },
             { position: 'top', content: 'What (什麼)：問題的本質是什麼？' },
@@ -165,7 +165,7 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
           id: 'project',
           name: '專案管理模板',
           description: '用於專案規劃和執行管理的完整流程',
-          category: 'project',
+          category: 'planning',
           cells: [
             { position: 'center', content: '專案目標' },
             { position: 'top', content: '專案啟動' },
@@ -178,6 +178,24 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
             { position: 'top-left', content: '專案收尾' },
           ],
           thinkingMode: 'spiral'
+        },
+        {
+          id: 'swot',
+          name: 'SWOT策略分析模板',
+          description: '用於策略分析的SWOT框架，系統化分析內外部優劣勢與機會威脅',
+          category: 'strategy',
+          cells: [
+            { position: 'center', content: '分析主題/企業/專案' },
+            { position: 'top', content: 'Strengths (優勢)：內部有利因素' },
+            { position: 'top-right', content: 'SO策略：優勢+機會' },
+            { position: 'right', content: 'Opportunities (機會)：外部有利因素' },
+            { position: 'bottom-right', content: 'WO策略：劣勢+機會' },
+            { position: 'bottom', content: 'Weaknesses (劣勢)：內部不利因素' },
+            { position: 'bottom-left', content: 'WT策略：劣勢+威脅' },
+            { position: 'left', content: 'Threats (威脅)：外部不利因素' },
+            { position: 'top-left', content: 'ST策略：優勢+威脅' },
+          ],
+          thinkingMode: 'cross'
         }
       ],
       history: {
@@ -647,11 +665,10 @@ export const useMandalaStoreWithHistory = create<MandalaStoreWithHistory>()(
       }
     }),
     {
-      name: 'mandala-storage-with-history',
+      name: 'mandala-storage-with-history-v2',
       partialize: (state) => ({ 
-        charts: state.charts, 
-        templates: state.templates,
-        // 不持久化歷史記錄和臨時圖表，避免存儲過大
+        charts: state.charts,
+        // 不持久化模板、歷史記錄和臨時圖表，模板使用代碼定義
       })
     }
   )

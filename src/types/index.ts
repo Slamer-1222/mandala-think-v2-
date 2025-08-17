@@ -19,7 +19,7 @@ export interface Template {
   id: string
   name: string
   description: string
-  category: 'creative' | 'planning' | 'analysis' | 'learning' | 'problem-solving'
+  category: 'creative' | 'planning' | 'analysis' | 'learning' | 'problem-solving' | 'strategy'
   cells: Partial<MandalaCell>[]
   thinkingMode: 'radial' | 'spiral' | 'cross'
 }
