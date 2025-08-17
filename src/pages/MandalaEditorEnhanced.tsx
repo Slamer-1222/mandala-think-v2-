@@ -3,6 +3,7 @@ import { useSearchParams, useParams, useNavigate } from 'react-router-dom'
 import { useMandalaStoreWithHistory } from '../store/mandalaStoreWithHistory'
 import MandalaGrid from '../components/MandalaGrid'
 import ExportPanel from '../components/ExportPanel'
+import { useToast, ToastContainer } from '../components/Toast'
 import { 
   Save, 
   Download, 
@@ -23,13 +24,16 @@ const MandalaEditorEnhanced = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const params = useParams()
+  const { success, error, info, toasts, closeToast } = useToast()
   const { 
     charts, 
     currentChart, 
+    tempChart,
     setCurrentChart, 
     createChart, 
     updateChart, 
     deleteChart,
+    saveTempChart,
     undo,
     redo,
     canUndo,
@@ -61,7 +65,21 @@ const MandalaEditorEnhanced = () => {
 
   const handleSave = () => {
     if (currentChart) {
-      updateChart(currentChart.id, { updatedAt: new Date() })
+      // 如果是臨時圖表，先保存為正式圖表
+      if (tempChart && tempChart.id === currentChart.id) {
+        const savedChart = saveTempChart()
+        if (savedChart) {
+          success('模板已保存為新圖表', { title: '儲存成功' })
+        } else {
+          error('保存失敗', { title: '儲存失敗' })
+        }
+      } else {
+        // 正式圖表只需更新時間戳
+        updateChart(currentChart.id, { updatedAt: new Date() })
+        success('圖表已儲存', { title: '儲存成功' })
+      }
+    } else {
+      error('沒有可儲存的圖表', { title: '儲存失敗' })
     }
   }
 
@@ -79,9 +97,15 @@ const MandalaEditorEnhanced = () => {
 
   const handleDelete = () => {
     if (currentChart) {
+      const chartTitle = currentChart.title
       deleteChart(currentChart.id)
       setCurrentChart(null)
+      success(`已刪除「${chartTitle}」`, { title: '刪除成功' })
+      setShowDeleteConfirm(false)
       navigate('/')
+    } else {
+      error('沒有可刪除的圖表', { title: '刪除失敗' })
+      setShowDeleteConfirm(false)
     }
   }
 
@@ -456,6 +480,9 @@ const MandalaEditorEnhanced = () => {
 
       {/* Export Panel */}
       <ExportPanel isOpen={showExportPanel} onClose={() => setShowExportPanel(false)} />
+      
+      {/* Toast Container */}
+      <ToastContainer toasts={toasts} onClose={closeToast} />
     </div>
   )
 }

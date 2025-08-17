@@ -161,9 +161,11 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
             <textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="flex-1 resize-none border-0 focus:ring-0 text-sm"
-              placeholder="輸入內容..."
+              className="flex-1 resize-none border-0 focus:ring-0 text-sm p-2 leading-relaxed"
+              placeholder="輸入內容... (支援多行，按 Enter 換行)"
               autoFocus
+              rows={3}
+              style={{ minHeight: '60px' }}
             />
             <div className="flex justify-end space-x-1 mt-2">
               <button
@@ -183,7 +185,7 @@ const MandalaGrid = ({ chart, onCellClick, editable = true }: MandalaGridProps) 
         ) : (
           <>
             <div className="h-full flex flex-col">
-              <div className="flex-1 text-sm leading-relaxed">
+              <div className="flex-1 text-sm leading-relaxed whitespace-pre-wrap">
                 {cell.content || (
                   <span className="text-gray-400 italic">
                     {getPlaceholderText(cell.position, chart.thinkingMode)}
