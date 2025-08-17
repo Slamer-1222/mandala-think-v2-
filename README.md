@@ -13,7 +13,7 @@
 ### 🎯 三種思考模式
 - **放射狀思考 (Radial)**：從中心主題向外輻射，適合創意發想和多角度分析
 - **螺旋狀思考 (Spiral)**：按步驟順序排列，適合計劃管理和時間安排  
-- **十字型思考 (Cross)**：運用5W1H方法，適合問題分析和決策
+- **十字型思考 (Cross)**：運用5W1H方法或SWOT分析，適合問題分析、策略規劃和決策
 
 ### 🎨 智能視覺化
 - 每種思考模式都有獨特的色彩主題和視覺元素
@@ -21,12 +21,13 @@
 - 十字型模式：5W1H標籤和十字連接線
 - 放射狀模式：發散式思維的藍色主題
 
-### 📚 豐富模板系統
+### 📚 豐富模板系統 (6大分類)
 - **創意發想模板**：頭腦風暴和創意發想
-- **目標設定模板**：8步驟執行計劃
-- **問題分析模板**：5W1H系統分析
-- **學習規劃模板**：9步驟學習流程
-- **專案管理模板**：完整專案生命週期
+- **目標設定模板**：8步驟執行計劃和專案管理
+- **學習整理模板**：9步驟學習流程
+- **問題解決模板**：5W1H系統化問題分析
+- **策略分析模板**：SWOT四象限策略分析 ⭐ 新增
+- **分析工具模板**：多維度分析框架
 
 ### 🔧 核心功能
 - 九宮格曼陀羅圖表編輯
@@ -45,8 +46,8 @@
 
 1. **克隆專案**
 ```bash
-git clone https://github.com/your-username/mandala-think.git
-cd mandala-think
+git clone https://github.com/Slamer-1222/mandala-think-v2-.git
+cd mandala-think-v2-
 ```
 
 2. **安裝依賴**
@@ -78,8 +79,8 @@ npm run preview
 - 在編輯器中點擊「思考模式」按鈕
 - 選擇適合的思考方式：
   - **放射狀**：創意發想
-  - **螺旋狀**：計劃執行
-  - **十字型**：問題分析
+  - **螺旋狀**：計劃執行和學習規劃
+  - **十字型**：問題分析和策略分析
 
 ### 3. 編輯內容
 - 點擊任意單元格開始編輯
@@ -91,6 +92,19 @@ npm run preview
 - 自動保存到本地存儲
 - 可導出為模板重複使用
 - 支持多個圖表管理
+
+### 5. SWOT 策略分析模板使用 ⭐ 新功能
+- **中心格**：填入分析主題（企業、專案、個人等）
+- **四個主方向**：
+  - 上方：Strengths (優勢) - 內部有利因素
+  - 右方：Opportunities (機會) - 外部有利因素
+  - 下方：Weaknesses (劣勢) - 內部不利因素
+  - 左方：Threats (威脅) - 外部不利因素
+- **四個策略角**：
+  - 右上：SO策略（優勢+機會）
+  - 右下：WO策略（劣勢+機會）
+  - 左下：WT策略（劣勢+威脅）
+  - 左上：ST策略（優勢+威脅）
 
 ## 🛠️ 技術架構
 
@@ -168,9 +182,10 @@ src/
 
 ## 📞 聯繫我們
 
-- **專案主頁**：[GitHub Repository](https://github.com/your-username/mandala-think)
-- **問題反饋**：[Issues](https://github.com/your-username/mandala-think/issues)
-- **功能建議**：[Discussions](https://github.com/your-username/mandala-think/discussions)
+- **專案主頁**：[GitHub Repository](https://github.com/Slamer-1222/mandala-think-v2-)
+- **線上體驗**：[https://marga-ai.org/](https://marga-ai.org/)
+- **問題反饋**：[Issues](https://github.com/Slamer-1222/mandala-think-v2-/issues)
+- **功能建議**：[Discussions](https://github.com/Slamer-1222/mandala-think-v2-/discussions)
 
 ---
 
